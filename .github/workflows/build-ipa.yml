@@ -1,53 +1,26 @@
-name: Build IPA — AppSync/Filza (no Apple account)
-
+name: Build IPA
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
-
 jobs:
   build:
-        runs-on: macos-13
-
-    env:
-      SCHEME:    SUNAPSEZERO
-      PROJECT:   SUNAPSEZERO.xcodeproj
-      BUNDLE_ID: com.sunapsezero.app
-
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
-
-      - name: Build unsigned .app
+      - name: Build unsigned app
         run: |
-          xcodebuild build \
-            -project  "$PROJECT"  \
-            -scheme   "$SCHEME"   \
-            -sdk      iphoneos    \
-            -configuration Release \
-            ARCHS=armv7 \
-            VALID_ARCHS=armv7 \
-            ONLY_ACTIVE_ARCH=NO \
-            IPHONEOS_DEPLOYMENT_TARGET=7.0 \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGN_ENTITLEMENTS="" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES \
-            CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/build" \
-            2>&1 | tee build.log | tail -50
-
+          xcodebuild build -project SUNAPSEZERO.xcodeproj -scheme SUNAPSEZERO -sdk iphoneos -configuration Release ARCHS=armv7 VALID_ARCHS=armv7 ONLY_ACTIVE_ARCH=NO IPHONEOS_DEPLOYMENT_TARGET=7.0 CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" AD_HOC_CODE_SIGNING_ALLOWED=YES CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/build"
       - name: Package IPA
         run: |
-          APP=$(find "$RUNNER_TEMP/build" -name "*.app" -maxdepth 2 | head -1)
-          echo "Found: $APP"
+          APP=$(find "$RUNNER_TEMP/build" -name "*.app" | head -1)
           mkdir -p "$RUNNER_TEMP/Payload"
           cp -R "$APP" "$RUNNER_TEMP/Payload/"
           cd "$RUNNER_TEMP"
           zip -r SUNAPSEZERO.ipa Payload/
-          echo "IPA size: $(du -sh SUNAPSEZERO.ipa | cut -f1)"
-
-      - name: Upload IPA artifact
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: SUNAPSEZERO-armv7-unsigned
+          name: SUNAPSEZERO-unsigned
           path: ${{ runner.temp }}/SUNAPSEZERO.ipa
           retention-days: 90
