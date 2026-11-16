@@ -6,19 +6,20 @@ on:
 jobs:
   build:
     runs-on: macos-13
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Build unsigned app
+      - name: Build
         run: |
-          xcodebuild build -project SUNAPSEZERO.xcodeproj -scheme SUNAPSEZERO -sdk iphoneos -configuration Release ARCHS=armv7 VALID_ARCHS=armv7 ONLY_ACTIVE_ARCH=NO IPHONEOS_DEPLOYMENT_TARGET=7.0 CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" AD_HOC_CODE_SIGNING_ALLOWED=YES CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/build"
-      - name: Package IPA
+          xcodebuild build -project SUNAPSEZERO.xcodeproj -scheme SUNAPSEZERO -sdk iphoneos -configuration Release ARCHS=armv7 ONLY_ACTIVE_ARCH=NO IPHONEOS_DEPLOYMENT_TARGET=7.0 CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" AD_HOC_CODE_SIGNING_ALLOWED=YES CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/build"
+      - name: Package
         run: |
           APP=$(find "$RUNNER_TEMP/build" -name "*.app" | head -1)
           mkdir -p "$RUNNER_TEMP/Payload"
           cp -R "$APP" "$RUNNER_TEMP/Payload/"
           cd "$RUNNER_TEMP"
           zip -r SUNAPSEZERO.ipa Payload/
-      - name: Upload IPA
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: SUNAPSEZERO-unsigned
