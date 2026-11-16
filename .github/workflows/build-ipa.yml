@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14          # Xcode 15 — last version with legacy iOS 7 SDK headers
+    runs-on: macos-latest          # Xcode 15 — last version with legacy iOS 7 SDK headers
 
     env:
       SCHEME:    SUNAPSEZERO
