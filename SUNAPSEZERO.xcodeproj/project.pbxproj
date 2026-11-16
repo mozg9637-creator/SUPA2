@@ -1,0 +1,234 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA000001 /* main.m in Sources */                  = {isa = PBXBuildFile; fileRef = AA100001; };
+		AA000002 /* AppDelegate.m in Sources */           = {isa = PBXBuildFile; fileRef = AA100002; };
+		AA000003 /* ViewController.m in Sources */        = {isa = PBXBuildFile; fileRef = AA100003; };
+		AA000010 /* UIKit.framework in Frameworks */      = {isa = PBXBuildFile; fileRef = AA100010; };
+		AA000011 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA100011; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AA100001 /* main.m */           = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m;           sourceTree = "<group>"; };
+		AA100002 /* AppDelegate.m */    = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m;    sourceTree = "<group>"; };
+		AA100003 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		AA100004 /* AppDelegate.h */    = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h;    path = AppDelegate.h;    sourceTree = "<group>"; };
+		AA100005 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h;    path = ViewController.h; sourceTree = "<group>"; };
+		AA100006 /* Info.plist */       = {isa = PBXFileReference; lastKnownFileType = text.plist.xml;    path = Info.plist;       sourceTree = "<group>"; };
+		AA100010 /* UIKit.framework */      = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework;      path = System/Library/Frameworks/UIKit.framework;      sourceTree = SDKROOT; };
+		AA100011 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AA200000 /* SUNAPSEZERO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SUNAPSEZERO.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AA300000 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000010 /* UIKit.framework in Frameworks */,
+				AA000011 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AA400000 /* root */ = {
+			isa = PBXGroup;
+			children = (
+				AA400001 /* SUNAPSEZERO */,
+				AA400002 /* Frameworks */,
+				AA400003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AA400001 /* SUNAPSEZERO */ = {
+			isa = PBXGroup;
+			children = (
+				AA100001 /* main.m */,
+				AA100002 /* AppDelegate.m */,
+				AA100004 /* AppDelegate.h */,
+				AA100003 /* ViewController.m */,
+				AA100005 /* ViewController.h */,
+				AA100006 /* Info.plist */,
+			);
+			path = SUNAPSEZERO;
+			sourceTree = "<group>";
+		};
+		AA400002 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AA100010 /* UIKit.framework */,
+				AA100011 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AA400003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA200000 /* SUNAPSEZERO.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AA500000 /* SUNAPSEZERO */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA700000 /* Build configuration list for PBXNativeTarget "SUNAPSEZERO" */;
+			buildPhases = (
+				AA600000 /* Sources */,
+				AA300000 /* Frameworks */,
+				AA600001 /* Resources */,
+			);
+			buildRules = ();
+			dependencies = ();
+			name = SUNAPSEZERO;
+			productName = SUNAPSEZERO;
+			productReference = AA200000 /* SUNAPSEZERO.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AA500001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0900;
+			};
+			buildConfigurationList = AA700001 /* Build configuration list for PBXProject "SUNAPSEZERO" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = Russian;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				ru,
+			);
+			mainGroup = AA400000 /* root */;
+			productRefGroup = AA400003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AA500000 /* SUNAPSEZERO */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AA600001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA600000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000001 /* main.m in Sources */,
+				AA000002 /* AppDelegate.m in Sources */,
+				AA000003 /* ViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AA800000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = armv7;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (DEBUG=1, "$(inherited)");
+				INFOPLIST_FILE = SUNAPSEZERO/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sunapsezero.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = armv7;
+			};
+			name = Debug;
+		};
+		AA800001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = armv7;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				COPY_PHASE_STRIP = YES;
+				INFOPLIST_FILE = SUNAPSEZERO/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sunapsezero.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = NO;
+				VALID_ARCHS = armv7;
+			};
+			name = Release;
+		};
+		AA800002 /* Debug (project) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		AA800003 /* Release (project) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AA700000 /* Build configuration list for PBXNativeTarget "SUNAPSEZERO" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA800000 /* Debug */,
+				AA800001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA700001 /* Build configuration list for PBXProject "SUNAPSEZERO" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA800002 /* Debug */,
+				AA800003 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = AA500001 /* Project object */;
+}

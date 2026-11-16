@@ -1,0 +1,87 @@
+name: Build IPA — AppSync/Filza (no Apple account)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    # macos-13 = Xcode 14 — поддерживает iOS 7 SDK / armv7
+    runs-on: macos-13
+
+    env:
+      SCHEME:    SUNAPSEZERO
+      PROJECT:   SUNAPSEZERO.xcodeproj
+      BUNDLE_ID: com.sunapsezero.app
+
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────────────
+      - uses: actions/checkout@v4
+
+      # ── 2. Выбираем Xcode 14 (есть старые SDK) ────────────────────────────
+      - name: Select Xcode 14
+        run: sudo xcode-select -s /Applications/Xcode_14.3.1.app/Contents/Developer
+
+      # ── 3. Собираем .app БЕЗ подписи ─────────────────────────────────────
+      #   CODE_SIGNING_REQUIRED=NO — не требует сертификат
+      #   CODE_SIGN_IDENTITY=""   — пустая подпись
+      #   AppSync на джейле проигнорирует подпись при установке
+      - name: Build unsigned .app
+        run: |
+          xcodebuild build \
+            -project  "$PROJECT"  \
+            -scheme   "$SCHEME"   \
+            -sdk      iphoneos    \
+            -configuration Release \
+            ARCHS=armv7 \
+            VALID_ARCHS=armv7 \
+            ONLY_ACTIVE_ARCH=NO \
+            IPHONEOS_DEPLOYMENT_TARGET=7.0 \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/build" \
+            2>&1 | tee build.log | tail -50
+
+      # ── 4. Упаковываем .app → .ipa вручную ───────────────────────────────
+      #   Структура IPA: Payload/<AppName>.app
+      - name: Package IPA
+        run: |
+          APP=$(find "$RUNNER_TEMP/build" -name "*.app" -maxdepth 2 | head -1)
+          echo "Found: $APP"
+
+          mkdir -p "$RUNNER_TEMP/Payload"
+          cp -R "$APP" "$RUNNER_TEMP/Payload/"
+
+          cd "$RUNNER_TEMP"
+          zip -r SUNAPSEZERO.ipa Payload/
+          echo "IPA size: $(du -sh SUNAPSEZERO.ipa | cut -f1)"
+
+      # ── 5. Загружаем IPA как артефакт GitHub ─────────────────────────────
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SUNAPSEZERO-armv7-unsigned
+          path: ${{ runner.temp }}/SUNAPSEZERO.ipa
+          retention-days: 90
+
+      # ── 6. (опционально) Создаём GitHub Release при теге v* ───────────────
+      - name: Upload to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ runner.temp }}/SUNAPSEZERO.ipa
+          name: "SUNAPSEZERO ${{ github.ref_name }}"
+          body: |
+            Unsigned IPA для AppSync Unified + Filza (iOS 7, iPhone 4, armv7).
+
+            ## Установка через Filza
+            1. Скачай `SUNAPSEZERO.ipa` на iPhone 4
+            2. Открой в Filza → зажми → «Installer»
+            3. AppSync Unified пропустит проверку подписи
+
+            ## Требования
+            - Джейлбрейк (p0sixspwn / evasi0n7)
+            - AppSync Unified из репозитория Karen/あけみ
