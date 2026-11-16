@@ -1,4 +1,4 @@
-name: Build IPA (iOS 7 / armv7)
+name: Build IPA — AppSync/Filza (no Apple account)
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest          # Xcode 15 — last version with legacy iOS 7 SDK headers
+    runs-on: macos-13
 
     env:
       SCHEME:    SUNAPSEZERO
@@ -15,93 +15,39 @@ jobs:
       BUNDLE_ID: com.sunapsezero.app
 
     steps:
-      # ── 1. Checkout ───────────────────────────────────────────────────────
       - uses: actions/checkout@v4
 
-      # ── 2. Import signing certificate + provisioning profile ─────────────
-      #   Add these secrets in GitHub → Settings → Secrets:
-      #     IOS_DISTRIBUTION_CERT_BASE64   (base64 of your .p12 file)
-      #     IOS_DISTRIBUTION_CERT_PASSWORD (password for the .p12)
-      #     IOS_PROVISIONING_PROFILE_BASE64 (base64 of .mobileprovision)
-      - name: Import code-signing assets
-        env:
-          CERT_B64:    ${{ secrets.IOS_DISTRIBUTION_CERT_BASE64 }}
-          CERT_PASS:   ${{ secrets.IOS_DISTRIBUTION_CERT_PASSWORD }}
-          PROFILE_B64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+      - name: Build unsigned .app
         run: |
-          # Create a temporary keychain
-          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
-          KEYCHAIN_PASS="$(uuidgen)"
-          security create-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
-          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-          security unlock-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
-
-          # Import certificate
-          CERT_PATH="$RUNNER_TEMP/cert.p12"
-          echo "$CERT_B64" | base64 --decode > "$CERT_PATH"
-          security import "$CERT_PATH" \
-            -P "$CERT_PASS" \
-            -A -t cert -f pkcs12 \
-            -k "$KEYCHAIN_PATH"
-          security list-keychain -d user -s "$KEYCHAIN_PATH"
-
-          # Install provisioning profile
-          PP_PATH="$RUNNER_TEMP/profile.mobileprovision"
-          echo "$PROFILE_B64" | base64 --decode > "$PP_PATH"
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          UUID=$(grep -a -A 1 'UUID' "$PP_PATH" | \
-                 grep -v UUID | \
-                 sed 's/.*<string>\(.*\)<\/string>/\1/')
-          cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/"$UUID".mobileprovision
-          echo "PROVISIONING_UUID=$UUID" >> $GITHUB_ENV
-
-      # ── 3. Build archive ──────────────────────────────────────────────────
-      - name: xcodebuild archive
-        run: |
-          xcodebuild archive \
-            -project "$PROJECT" \
-            -scheme  "$SCHEME"  \
-            -sdk     iphoneos   \
-            -archivePath "$RUNNER_TEMP/SUNAPSEZERO.xcarchive" \
+          xcodebuild build \
+            -project  "$PROJECT"  \
+            -scheme   "$SCHEME"   \
+            -sdk      iphoneos    \
+            -configuration Release \
             ARCHS=armv7 \
             VALID_ARCHS=armv7 \
+            ONLY_ACTIVE_ARCH=NO \
             IPHONEOS_DEPLOYMENT_TARGET=7.0 \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE="$PROVISIONING_UUID" \
-            CODE_SIGN_IDENTITY="iPhone Distribution" \
-            | xcpretty || true
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/build" \
+            2>&1 | tee build.log | tail -50
 
-      # ── 4. Export IPA ─────────────────────────────────────────────────────
-      - name: Export IPA
+      - name: Package IPA
         run: |
-          cat > "$RUNNER_TEMP/ExportOptions.plist" <<'PLIST'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-            "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>ad-hoc</string>
-              <key>compileBitcode</key>
-              <false/>
-              <key>stripSwiftSymbols</key>
-              <true/>
-              <key>thinning</key>
-              <string>&lt;none&gt;</string>
-          </dict>
-          </plist>
-          PLIST
+          APP=$(find "$RUNNER_TEMP/build" -name "*.app" -maxdepth 2 | head -1)
+          echo "Found: $APP"
+          mkdir -p "$RUNNER_TEMP/Payload"
+          cp -R "$APP" "$RUNNER_TEMP/Payload/"
+          cd "$RUNNER_TEMP"
+          zip -r SUNAPSEZERO.ipa Payload/
+          echo "IPA size: $(du -sh SUNAPSEZERO.ipa | cut -f1)"
 
-          xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/SUNAPSEZERO.xcarchive" \
-            -exportPath  "$RUNNER_TEMP/IPA" \
-            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
-            | xcpretty || true
-
-      # ── 5. Upload artifact ────────────────────────────────────────────────
-      - name: Upload IPA
+      - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SUNAPSEZERO-armv7
-          path: ${{ runner.temp }}/IPA/*.ipa
-          retention-days: 30
+          name: SUNAPSEZERO-armv7-unsigned
+          path: ${{ runner.temp }}/SUNAPSEZERO.ipa
+          retention-days: 90
